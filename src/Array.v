@@ -313,7 +313,7 @@ Local Ltac solve_lengths :=
 Hint Rewrite length_assign : length.
 Hint Rewrite length_subslice_oob using solve_lengths : length.
 
-Hint Rewrite index_oob : using solve_lengths : array.
+Hint Rewrite index_oob using solve_lengths : array.
 Hint Rewrite sel_assign_eq using solve_lengths : array.
 Hint Rewrite sel_assign_ne using solve_bounds : array.
 Hint Rewrite assign_oob using solve_lengths : array.
