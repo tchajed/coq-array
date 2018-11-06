@@ -317,6 +317,11 @@ Hint Rewrite sel_assign_eq using solve_lengths : array.
 Hint Rewrite sel_assign_ne using solve_bounds : array.
 Hint Rewrite assign_oob using solve_lengths : array.
 Hint Rewrite assign_assign_eq : array.
+
+Hint Rewrite index_app_fst using solve_lengths : array.
+Hint Rewrite index_app_snd using solve_lengths : array.
+Hint Rewrite index_app_snd_off : array.
+
 Hint Rewrite subslice_index_ok using solve_bounds : array.
 Hint Rewrite subslice_index_oob using solve_bounds : array.
 Hint Rewrite subslice_index_oob_l using solve_lengths : array.
