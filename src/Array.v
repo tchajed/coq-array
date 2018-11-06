@@ -1,6 +1,6 @@
 From Coq Require Import List.
 From Coq Require Import Omega.
-Require Nat.
+Require Init.Nat.
 
 From SimpleClasses Require Import Classes.
 
@@ -22,13 +22,27 @@ Section Array.
     end.
 
   Hint Extern 3 (_ < _) => omega.
+  Hint Extern 3 (_ >= _) => omega.
+
+  (* there's no way to create a rewriting base other than adding a hint *)
+  Hint Rewrite (@eq_refl False) using fail : solve_rewrite.
+
+  Ltac simplify :=
+    autorewrite with solve_rewrite in *.
+
+  Ltac solver :=
+    eauto; try omega; try congruence.
+
+  Ltac finish_solve :=
+    solve [ solver ].
 
   Ltac induct l :=
     induction l; simpl;
     (intros n **);
-     [ eauto; try omega |
+     [ simplify; solver |
        try (destruct n; simpl in *;
-            [ eauto; omega | eauto; try omega ]) ].
+            simplify;
+            [ finish_solve | solver ]) ].
 
   Theorem length_assign l x' : forall n,
     length (assign l n x') = length l.
@@ -48,7 +62,6 @@ Section Array.
       assign (assign l n x1) n x2 = assign l n x2.
   Proof.
     induct l.
-    rewrite IHl; auto.
   Qed.
 
   Theorem assign_assign_ne l x1 x2 : forall n1 n2,
@@ -67,12 +80,6 @@ Section Array.
               end
     end.
 
-  Definition sel l n : A :=
-    match index l n with
-    | Some x => x
-    | None => default
-    end.
-
   Theorem index_assign_eq l : forall n x',
       n < length l ->
       index (assign l n x') n = Some x'.
@@ -87,20 +94,59 @@ Section Array.
     induct l.
     - generalize dependent n.
       induction n2; simpl; intros.
-      + destruct n; auto; try congruence.
-      + destruct n; auto.
+      + destruct n; solver.
+      + destruct n; solver.
   Qed.
 
-  Local Lemma sel_cons_S x xs n :
-    sel (x::xs) (S n) = sel xs n.
+  Theorem index_oob l : forall n,
+      n >= length l ->
+      index l n = None.
   Proof.
-    unfold sel; simpl; auto.
+    induct l.
+  Qed.
+
+  Theorem index_not_none l : forall n,
+      n < length l ->
+      index l n <> None.
+  Proof.
+    induct l.
+  Qed.
+
+  Definition sel l n : A :=
+    match index l n with
+    | Some x => x
+    | None => default
+    end.
+
+  Ltac index_to_sel H :=
+    unfold sel; intros;
+    try rewrite H; solve [ auto ].
+
+  Theorem sel_assign_eq l : forall n x',
+      n < length l ->
+      sel (assign l n x') n = x'.
+  Proof.
+    index_to_sel index_assign_eq.
+  Qed.
+
+  Theorem sel_assign_ne l : forall n1 n2 x',
+      n1 <> n2 ->
+      sel (assign l n2 x') n1 = sel l n1.
+  Proof.
+    index_to_sel index_assign_ne.
   Qed.
 
   Definition subslice l n m : list :=
     firstn m (skipn n l).
 
-  Theorem subslice_len_general l n m :
+  Ltac solve_lengths :=
+    autorewrite with length; auto; omega.
+
+  Hint Rewrite firstn_nil skipn_nil : solve_rewrite.
+  Hint Rewrite firstn_length_le using (solve_lengths) : length.
+  Hint Rewrite skipn_length : length.
+
+  Theorem length_subslice_general l n m :
     length (subslice l n m) = Nat.min m (length l - n).
   Proof.
     unfold subslice.
@@ -109,13 +155,108 @@ Section Array.
     auto.
   Qed.
 
-  Theorem subslice_len l n m :
+  Theorem length_subslice l n m :
     n + m <= length l ->
     length (subslice l n m) = m.
   Proof.
     unfold subslice; intros.
-    rewrite firstn_length_le; auto.
-    rewrite skipn_length; omega.
+    autorewrite with length; auto.
+  Qed.
+
+  Theorem length_subslice_oob l n m :
+    n + m >= length l ->
+    length (subslice l n m) = length l - n.
+  Proof.
+    rewrite length_subslice_general.
+    intros.
+    destruct (Nat.min_spec m (length l - n)); omega.
+  Qed.
+
+  Lemma index_firstn l : forall n i,
+      i < n ->
+      index (firstn n l) i = index l i.
+  Proof.
+    induct l.
+    destruct i; auto.
+  Qed.
+
+  Lemma index_firstn_oob l : forall n i,
+      i >= n ->
+      index (firstn n l) i = None.
+  Proof.
+    induct l.
+    destruct i; solver.
+  Qed.
+
+  Lemma index_skipn l : forall n i,
+      index (skipn n l) i = index l (n + i).
+  Proof.
+    induct l.
+  Qed.
+
+  Hint Rewrite index_oob using omega : array.
+  Hint Rewrite index_firstn using omega : array.
+  Hint Rewrite index_firstn_oob using omega : array.
+  Hint Rewrite index_skipn using omega : array.
+
+  Theorem subslice_index_ok l : forall n m i,
+      i < m ->
+      index (subslice l n m) i = index l (n+i).
+  Proof.
+    unfold subslice; intros.
+    autorewrite with array; auto.
+  Qed.
+
+  Theorem subslice_index_oob l : forall n m i,
+      i >= m ->
+      index (subslice l n m) i = None.
+  Proof.
+    unfold subslice; intros.
+    autorewrite with array; auto.
+  Qed.
+
+  Theorem subslice_index_oob_l l : forall n m i,
+      n+i >= length l ->
+      index (subslice l n m) i = None.
+  Proof.
+    unfold subslice; intros.
+    destruct (lt_dec i m);
+      autorewrite with array; auto.
+  Qed.
+
+  Theorem subslice_sel_ok l : forall n m i,
+      i < m ->
+      sel (subslice l n m) i = sel l (n+i).
+  Proof.
+    index_to_sel subslice_index_ok.
+  Qed.
+
+  Theorem subslice_index_conv l : forall n m i,
+      i >= n ->
+      i+n < m ->
+      index l i = index (subslice l n m) (i-n).
+  Proof.
+    intros.
+    rewrite subslice_index_ok by omega.
+    f_equal; omega.
   Qed.
 
 End Array.
+
+
+Local Ltac solve_bounds :=
+  auto; omega.
+Local Ltac solve_lengths :=
+  autorewrite with length; solve_bounds.
+
+Hint Rewrite length_assign : length.
+Hint Rewrite length_subslice_oob using solve_lengths : length.
+
+Hint Rewrite sel_assign_eq using solve_lengths : array.
+Hint Rewrite sel_assign_ne using solve_bounds : array.
+Hint Rewrite assign_oob using solve_lengths : array.
+Hint Rewrite assign_assign_eq : array.
+Hint Rewrite subslice_index_ok using solve_bounds : array.
+Hint Rewrite subslice_index_oob using solve_bounds : array.
+Hint Rewrite subslice_index_oob_l using solve_lengths : array.
+Hint Rewrite subslice_sel_ok using solve_bounds : array.
