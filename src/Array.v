@@ -257,6 +257,51 @@ Section Array.
     f_equal; omega.
   Qed.
 
+  Theorem index_app_fst l1 : forall l2 i,
+    i < length l1 ->
+    index (l1 ++ l2) i = index l1 i.
+  Proof.
+    induction l1; simpl; intros.
+    - omega.
+    - destruct i; simpl; auto.
+  Qed.
+
+  Theorem index_app_snd l1 : forall l2 i,
+    i >= length l1 ->
+    index (l1 ++ l2) i = index l2 (i - length l1).
+  Proof.
+    induction l1; simpl; intros.
+    - f_equal; omega.
+    - destruct i; simpl; try omega.
+      apply IHl1; auto; omega.
+  Qed.
+
+  Theorem index_app_snd_off l1 : forall l2 i,
+    index (l1 ++ l2) (length l1 + i) = index l2 i.
+  Proof.
+    intros.
+    rewrite index_app_snd by omega.
+    f_equal; omega.
+  Qed.
+
+  Theorem subslice_select_array l1 l2 l3 n m :
+    n = length l1 ->
+    m = length l2 ->
+    subslice (l1 ++ l2 ++ l3) n m = l2.
+  Proof.
+    intros; subst.
+    apply index_ext_eq; intros.
+    destruct (lt_dec n (length l2)).
+    rewrite subslice_index_ok by omega.
+    rewrite index_app_snd_off.
+    rewrite index_app_fst by omega.
+    auto.
+
+    rewrite subslice_index_oob by omega.
+    rewrite index_oob by omega.
+    auto.
+  Qed.
+
 End Array.
 
 
@@ -276,3 +321,4 @@ Hint Rewrite subslice_index_ok using solve_bounds : array.
 Hint Rewrite subslice_index_oob using solve_bounds : array.
 Hint Rewrite subslice_index_oob_l using solve_lengths : array.
 Hint Rewrite subslice_sel_ok using solve_bounds : array.
+Hint Rewrite subslice_select_array using solve_lengths : array.
