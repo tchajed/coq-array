@@ -38,11 +38,11 @@ Section Array.
 
   Ltac induct l :=
     induction l; simpl;
-    (intros n **);
-     [ simplify; solver |
-       try (destruct n; simpl in *;
-            simplify;
-            [ finish_solve | solver ]) ].
+    intros n; intros;
+    [ simplify; solver |
+      try (destruct n; simpl in *;
+           simplify;
+           [ finish_solve | solver ]) ].
 
   Theorem length_assign l x' : forall n,
     length (assign l n x') = length l.
@@ -110,6 +110,22 @@ Section Array.
       index l n <> None.
   Proof.
     induct l.
+  Qed.
+
+  Theorem index_ext_eq l1 l2 :
+    (forall n, index l1 n = index l2 n) ->
+    l1 = l2.
+  Proof.
+    generalize dependent l2.
+    induction l1; intros l2; intros.
+    - destruct l2; auto.
+      specialize (H 0); simpl in *; congruence.
+    - destruct l2.
+      + specialize (H 0); simpl in *; congruence.
+      + f_equal.
+        specialize (H 0); simpl in *; congruence.
+        apply IHl1; eauto; intros.
+        specialize (H (S n)); simpl in *; auto.
   Qed.
 
   Definition sel l n : A :=
