@@ -189,6 +189,13 @@ Section Array.
     apply index_none_bound in Heqo; omega.
   Qed.
 
+  Theorem sel_index_eq l1 n1 l2 n2 :
+    index l1 n1 = index l2 n2 ->
+    sel l1 n1 = sel l2 n2.
+  Proof.
+    index_to_sel H.
+  Qed.
+
   Definition index_dec l n : {n < length l /\ index l n = Some (sel l n)}
                              + {length l <= n /\ index l n = None}.
   Proof.
@@ -370,8 +377,7 @@ Section Array.
 End Array.
 
 Arguments index_oob [A].
-Arguments index_inbounds [A] [def].
-
+Arguments index_inbounds [A] {def}.
 
 Local Ltac solve_bounds :=
   auto; omega.
