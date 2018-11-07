@@ -208,6 +208,13 @@ Section Array.
     destruct n; simpl; auto.
   Qed.
 
+  Lemma skipn_length n : forall l, length (skipn n l) = length l - n.
+  Proof.
+    induction n; simpl; intros; auto.
+    rewrite <- minus_n_O; auto.
+    destruct l; simpl; auto.
+  Qed.
+
   Hint Rewrite firstn_nil skipn_nil : solve_rewrite.
   Hint Rewrite firstn_length_le using (solve_lengths) : length.
   Hint Rewrite skipn_length : length.
