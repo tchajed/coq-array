@@ -203,6 +203,11 @@ Section Array.
   Ltac solve_lengths :=
     autorewrite with length; auto; omega.
 
+  Lemma skipn_nil n : skipn n (@nil A) = nil.
+  Proof.
+    destruct n; simpl; auto.
+  Qed.
+
   Hint Rewrite firstn_nil skipn_nil : solve_rewrite.
   Hint Rewrite firstn_length_le using (solve_lengths) : length.
   Hint Rewrite skipn_length : length.
