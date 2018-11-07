@@ -112,6 +112,34 @@ Section Array.
     induct l.
   Qed.
 
+  Theorem index_none_bound l n :
+      index l n = None ->
+      length l <= n.
+  Proof.
+    intros.
+    destruct (lt_dec n (length l)); try omega.
+    exfalso; apply index_not_none in H; auto.
+  Qed.
+
+  Theorem index_some_bound l n x :
+    index l n = Some x ->
+    n < length l.
+  Proof.
+    intros.
+    destruct (lt_dec n (length l)); eauto.
+    assert (index l n = None) by eauto using index_oob.
+    congruence.
+  Qed.
+
+  Theorem index_inbounds_exists l n :
+    n < length l ->
+    exists v, index l n = Some v.
+  Proof.
+    intros.
+    destruct_with_eqn (index l n); eauto.
+    apply index_none_bound in Heqo; omega.
+  Qed.
+
   Theorem index_ext_eq l1 l2 :
     (forall n, index l1 n = index l2 n) ->
     l1 = l2.
@@ -150,6 +178,23 @@ Section Array.
       sel (assign l n2 x') n1 = sel l n1.
   Proof.
     index_to_sel index_assign_ne.
+  Qed.
+
+  Theorem index_inbounds l n :
+    n < length l ->
+    index l n = Some (sel l n).
+  Proof.
+    unfold sel; intros.
+    destruct_with_eqn (index l n); eauto.
+    apply index_none_bound in Heqo; omega.
+  Qed.
+
+  Definition index_dec l n : {n < length l /\ index l n = Some (sel l n)}
+                             + {length l <= n /\ index l n = None}.
+  Proof.
+    destruct (lt_dec n (length l)); [ left | right ];
+      split; try omega;
+      auto using index_inbounds, index_oob.
   Qed.
 
   Definition subslice l n m : list :=
@@ -302,7 +347,18 @@ Section Array.
     auto.
   Qed.
 
+  Theorem length_bounds l n :
+    length l <= n ->
+    length l >= n ->
+    length l = n.
+  Proof.
+    omega.
+  Qed.
+
 End Array.
+
+Arguments index_oob [A].
+Arguments index_inbounds [A] [def].
 
 
 Local Ltac solve_bounds :=
@@ -331,3 +387,5 @@ Hint Rewrite subslice_index_oob using solve_bounds : array.
 Hint Rewrite subslice_index_oob_l using solve_lengths : array.
 Hint Rewrite subslice_sel_ok using solve_bounds : array.
 Hint Rewrite subslice_select_array using solve_lengths : array.
+
+Ltac array := autorewrite with array; auto.
