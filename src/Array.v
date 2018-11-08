@@ -483,4 +483,4 @@ Hint Rewrite subslice_index_oob_l using solve_lengths : array.
 Hint Rewrite subslice_sel_ok using solve_bounds : array.
 Hint Rewrite subslice_select_array using solve_lengths : array.
 
-Ltac array := autorewrite with array; auto.
+Ltac array := autorewrite with length array; auto.
