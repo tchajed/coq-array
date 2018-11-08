@@ -11,15 +11,14 @@ Set Implicit Arguments.
 
 Section Array.
   Context (A:Type).
-  Context {def: Default A}.
   Notation array := (list A).
   Implicit Types (l:array) (n:nat) (x:A).
   Notation assign := (Array.assign (A:=A)).
 
-  Fixpoint massign l (ws: list (nat*A)) : array :=
+  Fixpoint massign (ws: list (nat*A)) l : array :=
     match ws with
     | nil => l
-    | (n, v)::ws' => massign (assign l n v) ws'
+    | (n, v)::ws' => massign ws' (assign l n v)
     end.
 
   Fixpoint ws_lookup (ws: list (nat*A)) n : option A :=
@@ -33,7 +32,7 @@ Section Array.
 
   Theorem massign_not_in ws : forall l n,
       ws_lookup ws n = None ->
-      index (massign l ws) n = index l n.
+      index (massign ws l) n = index l n.
   Proof.
     induction ws; simpl; intros; auto.
     destruct a as [a v].
@@ -43,7 +42,7 @@ Section Array.
   Qed.
 
   Theorem length_massign ws : forall l,
-      length (massign l ws) = length l.
+      length (massign ws l) = length l.
   Proof.
     induction ws; simpl; intros; auto.
     destruct a.
@@ -54,7 +53,7 @@ Section Array.
 
   Theorem massign_oob ws : forall l n,
       n >= length l ->
-      index (massign l ws) n = None.
+      index (massign ws l) n = None.
   Proof.
     induction ws; simpl; intros; array.
     destruct a.
@@ -64,7 +63,7 @@ Section Array.
   Theorem massign_in ws l n v :
     n < length l ->
     ws_lookup ws n = Some v ->
-    index (massign l ws) n = Some v.
+    index (massign ws l) n = Some v.
   Proof.
     generalize dependent v.
     generalize dependent n.
@@ -80,15 +79,15 @@ Section Array.
       rewrite massign_not_in by auto; array.
   Qed.
 
-  Theorem massign_idempotent l ws :
-    massign (massign l ws) ws = massign l ws.
+  Theorem massign_idempotent ws l :
+    massign ws (massign ws l) = massign ws l.
   Proof.
     apply index_ext_eq; intros.
-    destruct (index_dec l n); (intuition idtac).
+    destruct (lt_dec n (length l)).
     destruct_with_eqn (ws_lookup ws n).
     erewrite ?massign_in by (eauto; array); auto.
     rewrite ?massign_not_in by auto; auto.
-    rewrite ?massign_oob by array; auto.
+    rewrite ?massign_oob by (array; omega); auto.
   Qed.
 
 End Array.
