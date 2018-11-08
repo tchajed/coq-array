@@ -66,9 +66,11 @@ Section Array.
 
   Theorem assign_assign_ne l x1 x2 : forall n1 n2,
       n1 <> n2 ->
-      assign (assign l n1 x1) n2 x2 = assign (assign l n1 x1) n2 x2.
+      assign (assign l n1 x1) n2 x2 = assign (assign l n2 x2) n1 x1.
   Proof.
     induct l.
+    destruct n, n2; simpl; try congruence.
+    rewrite IHl by congruence; auto.
   Qed.
 
   Fixpoint index l n : option A :=
