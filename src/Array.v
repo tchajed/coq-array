@@ -226,6 +226,13 @@ Section Array.
   Hint Rewrite firstn_length_le using (solve_lengths) : length.
   Hint Rewrite skipn_length : length.
 
+  Theorem subslice_nil n m :
+    subslice nil n m = @nil A.
+  Proof.
+    unfold subslice.
+    rewrite skipn_nil, firstn_nil; auto.
+  Qed.
+
   Theorem length_subslice_general l n m :
     length (subslice l n m) = Nat.min m (length l - n).
   Proof.
