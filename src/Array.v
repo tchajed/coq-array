@@ -365,6 +365,22 @@ Section Array.
     rewrite firstn_oob; auto.
   Qed.
 
+  Theorem subslice_one_more l : forall i n p,
+    index l i = Some p ->
+    S i + n <= length l ->
+    subslice l i (S n) = p :: subslice l (S i) n.
+  Proof.
+    induction l; simpl; intros.
+    - congruence.
+    - rewrite subslice_cons.
+      destruct i; simpl in *.
+      + inversion H; subst; clear H.
+        rewrite subslice_at0 by omega.
+        rewrite subslice_at0 by (simpl; omega).
+        simpl; auto.
+      + rewrite <- IHl; eauto; try omega.
+  Qed.
+
   Theorem index_app_fst l1 : forall l2 i,
     i < length l1 ->
     index (l1 ++ l2) i = index l1 i.
