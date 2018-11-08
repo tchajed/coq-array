@@ -321,6 +321,50 @@ Section Array.
     f_equal; omega.
   Qed.
 
+  Theorem subslice_cons x xs n m :
+    subslice (x::xs) (S n) m =
+    subslice xs n m.
+  Proof.
+    unfold subslice; simpl.
+    reflexivity.
+  Qed.
+
+  Theorem subslice_at0 l m :
+    subslice l 0 m = firstn m l.
+  Proof.
+    unfold subslice; simpl; auto.
+  Qed.
+
+  Theorem firstn_oob l n :
+    n >= length l ->
+    firstn n l = l.
+  Proof.
+    generalize dependent l.
+    induction n; simpl; intros.
+    - destruct l; simpl in *; auto.
+      exfalso; omega.
+    - destruct l; simpl in *; auto.
+      rewrite IHn by omega; auto.
+  Qed.
+
+  Theorem subslice_to_end l n m :
+    n + m >= length l ->
+    subslice l n m = skipn n l.
+  Proof.
+    unfold subslice; intros.
+    rewrite firstn_oob; auto.
+    rewrite skipn_length; omega.
+  Qed.
+
+  Theorem subslice_whole l m :
+    m >= length l ->
+    subslice l 0 m = l.
+  Proof.
+    intros.
+    rewrite subslice_at0.
+    rewrite firstn_oob; auto.
+  Qed.
+
   Theorem index_app_fst l1 : forall l2 i,
     i < length l1 ->
     index (l1 ++ l2) i = index l1 i.
