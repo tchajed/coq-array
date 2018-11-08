@@ -445,6 +445,14 @@ Section Array.
 
 End Array.
 
+Module ArrayNotations.
+  Declare Scope array_scope.
+  Delimit Scope array_scope with array.
+  Notation "l [ i  :=  v ]" := (assign l i v) (at level 10, left associativity) : array_scope.
+  Notation "l [ i ]" := (index l i) (at level 11, no associativity) : array_scope.
+  Notation "l [! i ]" := (sel l i) (at level 11, no associativity) : array_scope.
+End ArrayNotations.
+
 Arguments index_oob [A].
 Arguments index_inbounds [A] {def}.
 
