@@ -90,8 +90,17 @@ Section Array.
     rewrite ?massign_oob by (array; omega); auto.
   Qed.
 
+  Theorem massign_snoc ws a v  : forall l,
+    massign (ws ++ (a,v)::nil) l = assign (massign ws l) a v.
+  Proof.
+    induction ws; simpl; intros; auto.
+    destruct a0 as [a' v'].
+    rewrite IHws; array.
+  Qed.
+
 End Array.
 
 Hint Rewrite length_massign : length.
 Hint Rewrite massign_not_in using solve [ auto; congruence ] : array.
+Hint Rewrite massign_snoc : array.
 (* massign_in requires erewriting *)
