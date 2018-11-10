@@ -158,6 +158,19 @@ Section Array.
         specialize (H (S n)); simpl in *; auto.
   Qed.
 
+  (* extensional equality for in-bounds addresses, with a separate proof lengths
+  are equal *)
+  Theorem index_bound_ext_eq l1 l2 :
+    length l1 = length l2 ->
+    (forall n, n < length l1 -> n < length l2 -> index l1 n = index l2 n) ->
+    l1 = l2.
+  Proof.
+    intros.
+    apply index_ext_eq; intros.
+    destruct (lt_dec n (length l1)); auto.
+    rewrite ?index_oob by auto; auto.
+  Qed.
+
   Definition sel l n : A :=
     match index l n with
     | Some x => x
@@ -196,6 +209,26 @@ Section Array.
     sel l1 n1 = sel l2 n2.
   Proof.
     index_to_sel H.
+  Qed.
+
+  Theorem index_sel_eq l1 n1 l2 n2 :
+    n1 < length l1 ->
+    n2 < length l2 ->
+    sel l1 n1 = sel l2 n2 ->
+    index l1 n1 = index l2 n2.
+  Proof.
+    intros.
+    rewrite ?index_inbounds by auto; congruence.
+  Qed.
+
+  Theorem sel_ext_eq l1 l2 :
+    length l1 = length l2 ->
+    (forall n, n < length l1 -> n < length l2 -> sel l1 n = sel l2 n) ->
+    l1 = l2.
+  Proof.
+    intros.
+    apply index_bound_ext_eq; auto; intros.
+    apply index_sel_eq; auto.
   Qed.
 
   Definition index_dec l n : {n < length l /\ index l n = Some (sel l n)}
