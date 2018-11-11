@@ -5,6 +5,8 @@ Require Init.Nat.
 From SimpleClasses Require Import Classes.
 
 Set Implicit Arguments.
+(* for compatibility with coq master *)
+Set Warnings "-undeclared-scope".
 
 Section Array.
   Context (A:Type).
@@ -479,7 +481,7 @@ Section Array.
 End Array.
 
 Module ArrayNotations.
-  Declare Scope array_scope.
+  (* Declare Scope array_scope. *)
   Delimit Scope array_scope with array.
   Notation "l [ i  :=  v ]" := (assign l i v) (at level 10, left associativity) : array_scope.
   Notation "l [ i ]" := (index l i) (at level 11, no associativity) : array_scope.
