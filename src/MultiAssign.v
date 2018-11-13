@@ -4,7 +4,7 @@ From Coq Require Import List.
 From Coq Require Import Omega.
 Require Init.Nat.
 
-From SimpleClasses Require Import Classes.
+From Classes Require Import EqualDec.
 Import EqualDecNotation.
 
 Set Implicit Arguments.

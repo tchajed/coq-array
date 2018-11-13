@@ -2,7 +2,7 @@ From Coq Require Import List.
 From Coq Require Import Omega.
 Require Init.Nat.
 
-From SimpleClasses Require Import Classes.
+From Classes Require Import Default.
 
 Set Implicit Arguments.
 (* for compatibility with coq master *)
