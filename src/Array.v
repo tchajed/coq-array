@@ -23,8 +23,8 @@ Section Array.
               end
     end.
 
-  Hint Extern 3 (_ < _) => omega.
-  Hint Extern 3 (_ >= _) => omega.
+  Hint Extern 3 (_ < _) => omega : core.
+  Hint Extern 3 (_ >= _) => omega : core.
 
   (* there's no way to create a rewriting base other than adding a hint *)
   Hint Rewrite (@eq_refl False) using fail : solve_rewrite.
