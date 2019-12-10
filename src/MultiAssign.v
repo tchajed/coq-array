@@ -1,4 +1,4 @@
-Require Import Array.Array.
+From Array Require Import Array.
 
 From Coq Require Import List.
 From Coq Require Import Omega.
