@@ -1,6 +1,7 @@
 From Coq Require Import List.
-From Coq Require Import Omega.
-Require Init.Nat.
+From Coq Require Import Lia.
+From Coq Require Import PeanoNat.
+Import Compare_dec.
 
 From Classes Require Import Default.
 
@@ -23,8 +24,8 @@ Section Array.
               end
     end.
 
-  Hint Extern 3 (_ < _) => omega : core.
-  Hint Extern 3 (_ >= _) => omega : core.
+  Hint Extern 3 (_ < _) => lia : core.
+  Hint Extern 3 (_ >= _) => lia : core.
 
   (* there's no way to create a rewriting base other than adding a hint *)
   Hint Rewrite (@eq_refl False) using fail : solve_rewrite.
@@ -33,7 +34,7 @@ Section Array.
     autorewrite with solve_rewrite in *.
 
   Ltac solver :=
-    eauto; try omega; try congruence.
+    eauto; try lia; try congruence.
 
   Ltac finish_solve :=
     solve [ solver ].
@@ -57,7 +58,7 @@ Section Array.
       assign l n x = l.
   Proof.
     induct l.
-    rewrite IHl by omega; auto.
+    rewrite IHl by lia; auto.
   Qed.
 
   Theorem assign_assign_eq l x1 x2 : forall n,
@@ -121,7 +122,7 @@ Section Array.
       length l <= n.
   Proof.
     intros.
-    destruct (lt_dec n (length l)); try omega.
+    destruct (lt_dec n (length l)); try lia.
     exfalso; apply index_not_none in H; auto.
   Qed.
 
@@ -141,7 +142,7 @@ Section Array.
   Proof.
     intros.
     destruct_with_eqn (index l n); eauto.
-    apply index_none_bound in Heqo; omega.
+    apply index_none_bound in Heqo; lia.
   Qed.
 
   Theorem index_ext_eq l1 l2 :
@@ -203,7 +204,7 @@ Section Array.
   Proof.
     unfold sel; intros.
     destruct_with_eqn (index l n); eauto.
-    apply index_none_bound in Heqo; omega.
+    apply index_none_bound in Heqo; lia.
   Qed.
 
   Theorem sel_index_eq l1 n1 l2 n2 :
@@ -237,7 +238,7 @@ Section Array.
                              + {length l <= n /\ index l n = None}.
   Proof.
     destruct (lt_dec n (length l)); [ left | right ];
-      split; try omega;
+      split; try lia;
       auto using index_inbounds, index_oob.
   Qed.
 
@@ -245,7 +246,7 @@ Section Array.
     firstn m (skipn n l).
 
   Ltac solve_lengths :=
-    autorewrite with length; auto; omega.
+    autorewrite with length; auto; lia.
 
   Lemma skipn_nil n : skipn n (@nil A) = nil.
   Proof.
@@ -255,7 +256,7 @@ Section Array.
   Lemma skipn_length n : forall l, length (skipn n l) = length l - n.
   Proof.
     induction n; simpl; intros; auto.
-    rewrite <- minus_n_O; auto.
+    rewrite <- Minus.minus_n_O; auto.
     destruct l; simpl; auto.
   Qed.
 
@@ -293,7 +294,7 @@ Section Array.
   Proof.
     rewrite length_subslice_general.
     intros.
-    destruct (Nat.min_spec m (length l - n)); omega.
+    destruct (Nat.min_spec m (length l - n)); lia.
   Qed.
 
   Lemma index_firstn l : forall n i,
@@ -318,10 +319,10 @@ Section Array.
     induct l.
   Qed.
 
-  Hint Rewrite index_oob using omega : array.
-  Hint Rewrite index_firstn using omega : array.
-  Hint Rewrite index_firstn_oob using omega : array.
-  Hint Rewrite index_skipn using omega : array.
+  Hint Rewrite index_oob using lia : array.
+  Hint Rewrite index_firstn using lia : array.
+  Hint Rewrite index_firstn_oob using lia : array.
+  Hint Rewrite index_skipn using lia : array.
 
   Theorem subslice_index_ok l : forall n m i,
       i < m ->
@@ -361,8 +362,8 @@ Section Array.
       index l i = index (subslice l n m) (i-n).
   Proof.
     intros.
-    rewrite subslice_index_ok by omega.
-    f_equal; omega.
+    rewrite subslice_index_ok by lia.
+    f_equal; lia.
   Qed.
 
   Theorem subslice_cons x xs n m :
@@ -386,9 +387,9 @@ Section Array.
     generalize dependent l.
     induction n; simpl; intros.
     - destruct l; simpl in *; auto.
-      exfalso; omega.
+      exfalso; lia.
     - destruct l; simpl in *; auto.
-      rewrite IHn by omega; auto.
+      rewrite IHn by lia; auto.
   Qed.
 
   Theorem subslice_to_end l n m :
@@ -397,7 +398,7 @@ Section Array.
   Proof.
     unfold subslice; intros.
     rewrite firstn_oob; auto.
-    rewrite skipn_length; omega.
+    rewrite skipn_length; lia.
   Qed.
 
   Theorem subslice_whole l m :
@@ -419,10 +420,10 @@ Section Array.
     - rewrite subslice_cons.
       destruct i; simpl in *.
       + inversion H; subst; clear H.
-        rewrite subslice_at0 by omega.
-        rewrite subslice_at0 by (simpl; omega).
+        rewrite subslice_at0 by lia.
+        rewrite subslice_at0 by (simpl; lia).
         simpl; auto.
-      + rewrite <- IHl; eauto; try omega.
+      + rewrite <- IHl; eauto; try lia.
   Qed.
 
   Theorem index_app_fst l1 : forall l2 i,
@@ -430,7 +431,7 @@ Section Array.
     index (l1 ++ l2) i = index l1 i.
   Proof.
     induction l1; simpl; intros.
-    - omega.
+    - lia.
     - destruct i; simpl; auto.
   Qed.
 
@@ -439,17 +440,17 @@ Section Array.
     index (l1 ++ l2) i = index l2 (i - length l1).
   Proof.
     induction l1; simpl; intros.
-    - f_equal; omega.
-    - destruct i; simpl; try omega.
-      apply IHl1; auto; omega.
+    - f_equal; lia.
+    - destruct i; simpl; try lia.
+      apply IHl1; auto; lia.
   Qed.
 
   Theorem index_app_snd_off l1 : forall l2 i,
     index (l1 ++ l2) (length l1 + i) = index l2 i.
   Proof.
     intros.
-    rewrite index_app_snd by omega.
-    f_equal; omega.
+    rewrite index_app_snd by lia.
+    f_equal; lia.
   Qed.
 
   Theorem subslice_select_array l1 l2 l3 n m :
@@ -460,13 +461,13 @@ Section Array.
     intros; subst.
     apply index_ext_eq; intros.
     destruct (lt_dec n (length l2)).
-    rewrite subslice_index_ok by omega.
+    rewrite subslice_index_ok by lia.
     rewrite index_app_snd_off.
-    rewrite index_app_fst by omega.
+    rewrite index_app_fst by lia.
     auto.
 
-    rewrite subslice_index_oob by omega.
-    rewrite index_oob by omega.
+    rewrite subslice_index_oob by lia.
+    rewrite index_oob by lia.
     auto.
   Qed.
 
@@ -475,7 +476,7 @@ Section Array.
     length l >= n ->
     length l = n.
   Proof.
-    omega.
+    lia.
   Qed.
 
 End Array.
@@ -492,7 +493,7 @@ Arguments index_oob [A].
 Arguments index_inbounds [A] {def}.
 
 Local Ltac solve_bounds :=
-  auto; omega.
+  auto; lia.
 Local Ltac solve_lengths :=
   autorewrite with length; solve_bounds.
 

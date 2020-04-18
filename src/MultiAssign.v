@@ -1,8 +1,9 @@
 From Array Require Import Array.
 
 From Coq Require Import List.
-From Coq Require Import Omega.
-Require Init.Nat.
+From Coq Require Import Lia.
+From Coq Require Import PeanoNat.
+Import Compare_dec.
 
 From Classes Require Import EqualDec.
 Import EqualDecNotation.
@@ -87,7 +88,7 @@ Section Array.
     destruct_with_eqn (ws_lookup ws n).
     erewrite ?massign_in by (eauto; array); auto.
     rewrite ?massign_not_in by auto; auto.
-    rewrite ?massign_oob by (array; omega); auto.
+    rewrite ?massign_oob by (array; lia); auto.
   Qed.
 
   Theorem massign_snoc ws a v  : forall l,
