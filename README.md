@@ -1,6 +1,6 @@
 # Coq array library
 
-[![Build Status](https://travis-ci.org/tchajed/coq-array.svg?branch=master)](https://travis-ci.org/tchajed/coq-array)
+[![Build Status](https://travis-ci.com/tchajed/coq-array.svg?branch=master)](https://travis-ci.com/tchajed/coq-array)
 
 Theorems about using lists as arrays, supporting indexing, in-bounds updates, and subslicing.
 
