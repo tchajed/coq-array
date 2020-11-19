@@ -497,26 +497,26 @@ Local Ltac solve_bounds :=
 Local Ltac solve_lengths :=
   autorewrite with length; solve_bounds.
 
-Hint Rewrite length_assign : length.
-Hint Rewrite length_subslice_oob using solve_lengths : length.
+Global Hint Rewrite length_assign : length.
+Global Hint Rewrite length_subslice_oob using solve_lengths : length.
 
-Hint Rewrite index_oob using solve_lengths : array.
-Hint Rewrite index_assign_eq using solve_lengths : array.
-Hint Rewrite index_assign_ne using solve_bounds : array.
+Global Hint Rewrite index_oob using solve_lengths : array.
+Global Hint Rewrite index_assign_eq using solve_lengths : array.
+Global Hint Rewrite index_assign_ne using solve_bounds : array.
 
-Hint Rewrite sel_assign_eq using solve_lengths : array.
-Hint Rewrite sel_assign_ne using solve_bounds : array.
-Hint Rewrite assign_oob using solve_lengths : array.
-Hint Rewrite assign_assign_eq : array.
+Global Hint Rewrite sel_assign_eq using solve_lengths : array.
+Global Hint Rewrite sel_assign_ne using solve_bounds : array.
+Global Hint Rewrite assign_oob using solve_lengths : array.
+Global Hint Rewrite assign_assign_eq : array.
 
-Hint Rewrite index_app_fst using solve_lengths : array.
-Hint Rewrite index_app_snd using solve_lengths : array.
-Hint Rewrite index_app_snd_off : array.
+Global Hint Rewrite index_app_fst using solve_lengths : array.
+Global Hint Rewrite index_app_snd using solve_lengths : array.
+Global Hint Rewrite index_app_snd_off : array.
 
-Hint Rewrite subslice_index_ok using solve_bounds : array.
-Hint Rewrite subslice_index_oob using solve_bounds : array.
-Hint Rewrite subslice_index_oob_l using solve_lengths : array.
-Hint Rewrite subslice_sel_ok using solve_bounds : array.
-Hint Rewrite subslice_select_array using solve_lengths : array.
+Global Hint Rewrite subslice_index_ok using solve_bounds : array.
+Global Hint Rewrite subslice_index_oob using solve_bounds : array.
+Global Hint Rewrite subslice_index_oob_l using solve_lengths : array.
+Global Hint Rewrite subslice_sel_ok using solve_bounds : array.
+Global Hint Rewrite subslice_select_array using solve_lengths : array.
 
 Ltac array := autorewrite with length array; auto.
