@@ -101,7 +101,7 @@ Section Array.
 
 End Array.
 
-Hint Rewrite length_massign : length.
-Hint Rewrite massign_not_in using solve [ auto; congruence ] : array.
-Hint Rewrite massign_snoc : array.
+Global Hint Rewrite length_massign : length.
+Global Hint Rewrite massign_not_in using solve [ auto; congruence ] : array.
+Global Hint Rewrite massign_snoc : array.
 (* massign_in requires erewriting *)
