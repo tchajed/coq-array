@@ -4,5 +4,4 @@
 *.glob
 .*.aux
 .coqdeps.d
-_CoqProject
 .lia.cache
