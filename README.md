@@ -10,5 +10,5 @@ Using [coq-project-template](https://github.com/tchajed/coq-project-template):
 
 ```
 git submodule add https://github.com/tchajed/coq-array vendor/array
-git submodule add https://github.com/tchajed/coq-simple-classes vendor/simple-classes
+git submodule add https://github.com/tchajed/coq-classes vendor/classes
 ```
