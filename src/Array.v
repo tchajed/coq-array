@@ -9,6 +9,8 @@ Set Implicit Arguments.
 (* for compatibility with coq master *)
 Set Warnings "-undeclared-scope".
 
+Set Default Proof Using "Type".
+
 Section Array.
   Context (A:Type).
   Context {def: Default A}.
