@@ -30,7 +30,7 @@ Section Array.
   Hint Extern 3 (_ >= _) => lia : core.
 
   (* there's no way to create a rewriting base other than adding a hint *)
-  Hint Rewrite (@eq_refl False) using fail : solve_rewrite.
+  #[local] Hint Rewrite (@eq_refl False) using fail : solve_rewrite.
 
   Ltac simplify :=
     autorewrite with solve_rewrite in *.
@@ -262,9 +262,9 @@ Section Array.
     - destruct l; simpl; auto.
   Qed.
 
-  Hint Rewrite firstn_nil skipn_nil : solve_rewrite.
-  Hint Rewrite firstn_length_le using (solve_lengths) : length.
-  Hint Rewrite skipn_length : length.
+  #[local] Hint Rewrite firstn_nil skipn_nil : solve_rewrite.
+  #[local] Hint Rewrite firstn_length_le using (solve_lengths) : length.
+  #[local] Hint Rewrite skipn_length : length.
 
   Theorem subslice_nil n m :
     subslice nil n m = @nil A.
@@ -321,10 +321,10 @@ Section Array.
     induct l.
   Qed.
 
-  Hint Rewrite index_oob using lia : array.
-  Hint Rewrite index_firstn using lia : array.
-  Hint Rewrite index_firstn_oob using lia : array.
-  Hint Rewrite index_skipn using lia : array.
+  #[local] Hint Rewrite index_oob using lia : array.
+  #[local] Hint Rewrite index_firstn using lia : array.
+  #[local] Hint Rewrite index_firstn_oob using lia : array.
+  #[local] Hint Rewrite index_skipn using lia : array.
 
   Theorem subslice_index_ok l : forall n m i,
       i < m ->
@@ -499,26 +499,26 @@ Local Ltac solve_bounds :=
 Local Ltac solve_lengths :=
   autorewrite with length; solve_bounds.
 
-Hint Rewrite length_assign : length.
-Hint Rewrite length_subslice_oob using solve_lengths : length.
+#[export] Hint Rewrite length_assign : length.
+#[export] Hint Rewrite length_subslice_oob using solve_lengths : length.
 
-Hint Rewrite index_oob using solve_lengths : array.
-Hint Rewrite index_assign_eq using solve_lengths : array.
-Hint Rewrite index_assign_ne using solve_bounds : array.
+#[export] Hint Rewrite index_oob using solve_lengths : array.
+#[export] Hint Rewrite index_assign_eq using solve_lengths : array.
+#[export] Hint Rewrite index_assign_ne using solve_bounds : array.
 
-Hint Rewrite sel_assign_eq using solve_lengths : array.
-Hint Rewrite sel_assign_ne using solve_bounds : array.
-Hint Rewrite assign_oob using solve_lengths : array.
-Hint Rewrite assign_assign_eq : array.
+#[export] Hint Rewrite sel_assign_eq using solve_lengths : array.
+#[export] Hint Rewrite sel_assign_ne using solve_bounds : array.
+#[export] Hint Rewrite assign_oob using solve_lengths : array.
+#[export] Hint Rewrite assign_assign_eq : array.
 
-Hint Rewrite index_app_fst using solve_lengths : array.
-Hint Rewrite index_app_snd using solve_lengths : array.
-Hint Rewrite index_app_snd_off : array.
+#[export] Hint Rewrite index_app_fst using solve_lengths : array.
+#[export] Hint Rewrite index_app_snd using solve_lengths : array.
+#[export] Hint Rewrite index_app_snd_off : array.
 
-Hint Rewrite subslice_index_ok using solve_bounds : array.
-Hint Rewrite subslice_index_oob using solve_bounds : array.
-Hint Rewrite subslice_index_oob_l using solve_lengths : array.
-Hint Rewrite subslice_sel_ok using solve_bounds : array.
-Hint Rewrite subslice_select_array using solve_lengths : array.
+#[export] Hint Rewrite subslice_index_ok using solve_bounds : array.
+#[export] Hint Rewrite subslice_index_oob using solve_bounds : array.
+#[export] Hint Rewrite subslice_index_oob_l using solve_lengths : array.
+#[export] Hint Rewrite subslice_sel_ok using solve_bounds : array.
+#[export] Hint Rewrite subslice_select_array using solve_lengths : array.
 
 Ltac array := autorewrite with length array; auto.
