@@ -5,7 +5,7 @@
 Theorems about using lists as arrays, supporting indexing, in-bounds updates, and subslicing.
 
 I don't use this library any more so it doesn't see new features. I do aim to
-keep it working with new versions of Coq. Currently CI tests Coq 8.10 up to
+keep it working with new versions of Coq. Currently CI tests Coq 8.11 up to
 master and the library is simple enough that I don't anticipate needing to drop
 support for old versions.
 
