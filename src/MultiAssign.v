@@ -9,6 +9,8 @@ From Classes Require Import EqualDec.
 Import EqualDecNotation.
 
 Set Implicit Arguments.
+(* for compatibility with coq master *)
+Set Warnings "-unsupported-attributes".
 
 Section Array.
   Context (A:Type).
@@ -101,7 +103,7 @@ Section Array.
 
 End Array.
 
-Hint Rewrite length_massign : length.
-Hint Rewrite massign_not_in using solve [ auto; congruence ] : array.
-Hint Rewrite massign_snoc : array.
+#[global] Hint Rewrite length_massign : length.
+#[global] Hint Rewrite massign_not_in using solve [ auto; congruence ] : array.
+#[global] Hint Rewrite massign_snoc : array.
 (* massign_in requires erewriting *)
