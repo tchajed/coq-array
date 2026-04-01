@@ -1,0 +1,3 @@
+-Q src Array
+-Q vendor/classes/src Classes
+-arg -w -arg +deprecated-since-8.8,+deprecated-since-8.17,+deprecated-since-8.20,+deprecated-since-9.0,-deprecated-transitive-library-file-since-9.0

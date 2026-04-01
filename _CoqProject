@@ -1,5 +1,0 @@
--Q src Array
--Q vendor/classes/src Classes
--arg -w -arg +all,-disj-pattern-notation
-# for backwards compatibility
--arg -w -arg -deprecated-hint-rewrite-without-locality

@@ -1,8 +1,8 @@
 From Array Require Import Array.
 
-From Coq Require Import List.
-From Coq Require Import Lia.
-From Coq Require Import PeanoNat.
+From Stdlib Require Import List.
+From Stdlib Require Import Lia.
+From Stdlib Require Import PeanoNat.
 Import Compare_dec.
 
 From Classes Require Import EqualDec.
