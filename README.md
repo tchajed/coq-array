@@ -4,10 +4,7 @@
 
 Theorems about using lists as arrays, supporting indexing, in-bounds updates, and subslicing.
 
-I don't use this library any more so it doesn't see new features. I do aim to
-keep it working with new versions of Coq. Currently CI tests Coq 8.11 up to
-master and the library is simple enough that I don't anticipate needing to drop
-support for old versions.
+I don't use this library any more so it doesn't see new features. It should work on Rocq 9.0+.
 
 If you can use [stdpp](https://gitlab.mpi-sws.org/iris/stdpp) I would recommend
 using that, since it is well engineered and well maintained. However stdpp only
