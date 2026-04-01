@@ -1,6 +1,6 @@
-From Coq Require Import List.
-From Coq Require Import Lia.
-From Coq Require Import PeanoNat.
+From Stdlib Require Import List.
+From Stdlib Require Import Lia.
+From Stdlib Require Import PeanoNat.
 Import Compare_dec.
 
 From Classes Require Import Default.
@@ -12,7 +12,7 @@ Set Warnings "-unsupported-attributes".
 
 Set Default Proof Using "Type".
 
-Section Array.
+Section ArrayDefs.
   Context (A:Type).
   Context {def: Default A}.
   Notation list := (list A).
@@ -278,7 +278,7 @@ Section Array.
     length (subslice l n m) = Nat.min m (length l - n).
   Proof.
     unfold subslice.
-    rewrite firstn_length.
+    rewrite length_firstn.
     rewrite skipn_length.
     auto.
   Qed.
@@ -482,7 +482,7 @@ Section Array.
     lia.
   Qed.
 
-End Array.
+End ArrayDefs.
 
 Module ArrayNotations.
   (* Declare Scope array_scope. *)
